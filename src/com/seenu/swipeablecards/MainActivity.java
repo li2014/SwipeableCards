@@ -1,15 +1,65 @@
 package com.seenu.swipeablecards;
 
+import org.json.JSONObject;
+
+import com.android.volley.Request.Method;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.gson.Gson;
+import com.seenu.swipeablecards.application.SwipeableCards;
+import com.seenu.swipeablecards.pojo.Products;
+
 import android.os.Bundle;
 import android.app.Activity;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 
-public class MainActivity extends Activity {
+public class MainActivity extends ActionBarActivity {
+
+	private final String url = "https://api.import.io/store/data/c4e9791d-a2cc-4ce7-807d-aced4ee29ecd/_query?input/webpage/url=http://www.producthunt.com/&_user=a31791af-10fa-4234-9e23-508d6c7838e7&_apikey=EHJSRe1mjAgGkREpxEh4nTK385HVh1apflVdRjtwHW/7mIYy0a6meoIXt5MGQHQUFJxRBSORj8SnAWvoelhctw==";
+
+	private final String TAG = getClass().getSimpleName();
+
+	private Products pdtsObj;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
+		getDataFromServer();
+	}
+
+	private void getDataFromServer() {
+		// TODO Auto-generated method stub
+
+		JsonObjectRequest jObjReq = new JsonObjectRequest(Method.GET, url,
+				null, new Response.Listener<JSONObject>() {
+
+					@Override
+					public void onResponse(JSONObject response) {
+						// TODO Auto-generated method stub
+						String result = response.toString();
+						Log.i(TAG, result);
+
+						Gson gson = new Gson();
+						pdtsObj = gson.fromJson(result, Products.class);
+
+						Log.i(TAG, pdtsObj.getResults().get(0).getProductText());
+					}
+				}, new Response.ErrorListener() {
+
+					@Override
+					public void onErrorResponse(VolleyError error) {
+						// TODO Auto-generated method stub
+
+					}
+				});
+
+		SwipeableCards.getInstance().addToRequestQueue(jObjReq);
+
 	}
 
 	@Override
