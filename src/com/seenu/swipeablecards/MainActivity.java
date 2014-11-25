@@ -1,6 +1,16 @@
 package com.seenu.swipeablecards;
 
+import java.util.ArrayList;
+
 import org.json.JSONObject;
+
+import android.content.Context;
+import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
+import android.view.Menu;
+import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import com.android.volley.Request.Method;
 import com.android.volley.Response;
@@ -9,12 +19,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.gson.Gson;
 import com.seenu.swipeablecards.application.SwipeableCards;
 import com.seenu.swipeablecards.pojo.Products;
-
-import android.os.Bundle;
-import android.app.Activity;
-import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
-import android.view.Menu;
+import com.seenu.swipeablecards.swipecards.SwipeFlingAdapterView;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -24,17 +29,102 @@ public class MainActivity extends ActionBarActivity {
 
 	private Products pdtsObj;
 
+	private ArrayAdapter<String> adapter;
+
+	private SwipeFlingAdapterView flingContainer;
+
+	private ArrayList<String> al;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.card_swipe);
 
-		getDataFromServer();
+		flingContainer = (SwipeFlingAdapterView) findViewById(R.id.frame);
+
+		al = new ArrayList<String>();
+		al.add("php");
+		al.add("c");
+		al.add("python");
+		al.add("java");
+		al.add("html");
+		al.add("c++");
+		al.add("css");
+		al.add("javascript");
+
+		adapter = new ArrayAdapter<String>(this, R.layout.card_swipe_item,
+				R.id.textView1, al);
+		flingContainer.setAdapter(adapter);
+
+		flingContainer
+				.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
+					@Override
+					public void removeFirstObjectInAdapter() {
+						// this is the simplest way to delete an
+						// object from the Adapter
+						// (/AdapterView)
+						Log.d("LIST", "removed object!");
+					}
+
+					@Override
+					public void onLeftCardExit(Object dataObject) {
+						// Do something on the left!
+						// You also have access to the original
+						// object.
+						// If you want to use it just cast it
+						// (String) dataObject
+						Toast.makeText(MainActivity.this, "Left!",
+								Toast.LENGTH_SHORT).show();
+					}
+
+					@Override
+					public void onRightCardExit(Object dataObject) {
+						Toast.makeText(MainActivity.this, "Right!",
+								Toast.LENGTH_SHORT).show();
+					}
+
+					@Override
+					public void onAdapterAboutToEmpty(int itemsInAdapter) {
+						// Ask for more data here
+
+						Log.d("LIST", "notified");
+					}
+				});
+
+		// Optionally add an OnItemClickListener
+		flingContainer
+				.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
+					@Override
+					public void onItemClicked(int itemPosition,
+							Object dataObject) {
+
+						Toast.makeText(MainActivity.this, "Clicked!",
+								Toast.LENGTH_SHORT).show();
+					}
+				});
+
+		// getDataFromServer();
+	}
+
+	static void makeToast(Context ctx, String s) {
+		Toast.makeText(ctx, s, Toast.LENGTH_SHORT).show();
+	}
+
+	public void right() {
+		/**
+		 * Trigger the right event manually.
+		 */
+		flingContainer.getTopCardListener().selectRight();
+	}
+
+	public void left() {
+		flingContainer.getTopCardListener().selectLeft();
 	}
 
 	private void getDataFromServer() {
 		// TODO Auto-generated method stub
 
+		Log.i(TAG, url);
 		JsonObjectRequest jObjReq = new JsonObjectRequest(Method.GET, url,
 				null, new Response.Listener<JSONObject>() {
 
