@@ -69,6 +69,20 @@ public class Products {
 
 		private String description;
 
+		private OnCardDimissedListener mOnCardDimissedListener = null;
+
+		private OnClickListener mOnClickListener = null;
+
+		public interface OnClickListener {
+			void OnClickListener();
+		}
+
+		public interface OnCardDimissedListener {
+			void onLike();
+
+			void onDislike();
+		}
+
 		public String getProduct() {
 			return product;
 		}
@@ -107,6 +121,23 @@ public class Products {
 
 		public void setDescription(String description) {
 			this.description = description;
+		}
+
+		public OnCardDimissedListener getOnCardDimissedListener() {
+			return mOnCardDimissedListener;
+		}
+
+		public void setmOnCardDimissedListener(
+				OnCardDimissedListener mOnCardDimissedListener) {
+			this.mOnCardDimissedListener = mOnCardDimissedListener;
+		}
+
+		public OnClickListener getOnClickListener() {
+			return mOnClickListener;
+		}
+
+		public void setOnClickListener(OnClickListener mOnClickListener) {
+			this.mOnClickListener = mOnClickListener;
 		}
 
 	}

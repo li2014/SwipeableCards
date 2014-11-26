@@ -54,21 +54,32 @@ public class CardsAdapter extends BaseAdapter {
 			convertView = inflater.inflate(R.layout.card_swipe_item, null);
 			holder = new ViewHolder();
 
-			holder.pdtTextTv = (TextView) convertView
+			holder.upvotesTv = (TextView) convertView
 					.findViewById(R.id.textView1);
+			holder.pdtTextTv = (TextView) convertView
+					.findViewById(R.id.textView2);
+			holder.pdtDescTv = (TextView) convertView
+					.findViewById(R.id.textView3);
+			holder.pdtLinkTv = (TextView) convertView
+					.findViewById(R.id.textView4);
 			convertView.setTag(holder);
 		} else
 			holder = (ViewHolder) convertView.getTag();
 
+		holder.upvotesTv.setText(results.get(position).getUpvotes());
 		holder.pdtTextTv.setText(results.get(position).getProductText());
+		holder.pdtDescTv.setText(results.get(position).getDescription());
+		holder.pdtLinkTv.setText(results.get(position).getProduct());
 
 		return convertView;
 	}
 
 	private static class ViewHolder {
 
+		private TextView upvotesTv;
 		private TextView pdtTextTv;
-
+		private TextView pdtDescTv;
+		private TextView pdtLinkTv;
 	}
 
 }

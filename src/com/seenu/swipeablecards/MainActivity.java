@@ -4,22 +4,20 @@ import java.util.ArrayList;
 
 import org.json.JSONObject;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
-import android.widget.ArrayAdapter;
-import android.widget.Toast;
-
 import com.android.volley.Request.Method;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.gson.Gson;
+import com.seenu.swipeablecards.adapter.CardsAdapter;
 import com.seenu.swipeablecards.application.SwipeableCards;
 import com.seenu.swipeablecards.pojo.Products;
-import com.seenu.swipeablecards.swipecards.SwipeFlingAdapterView;
+import com.seenu.swipeablecards.pojo.Products.Product;
+import com.seenu.swipeablecards.swipecards.CardContainer;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -29,96 +27,28 @@ public class MainActivity extends ActionBarActivity {
 
 	private Products pdtsObj;
 
-	private ArrayAdapter<String> adapter;
-
-	private SwipeFlingAdapterView flingContainer;
-
 	private ArrayList<String> al;
+
+	private CardContainer mCardContainer;
+	private CardsAdapter adapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.card_swipe);
+		setContentView(R.layout.activity_main);
 
-		flingContainer = (SwipeFlingAdapterView) findViewById(R.id.frame);
+		mCardContainer = (CardContainer) findViewById(R.id.layoutview);
 
-		al = new ArrayList<String>();
-		al.add("php");
-		al.add("c");
-		al.add("python");
-		al.add("java");
-		al.add("html");
-		al.add("c++");
-		al.add("css");
-		al.add("javascript");
+		getDataFromServer();
 
-		adapter = new ArrayAdapter<String>(this, R.layout.card_swipe_item,
-				R.id.textView1, al);
-		flingContainer.setAdapter(adapter);
+		Product pdt = new Product();
 
-		flingContainer
-				.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
-					@Override
-					public void removeFirstObjectInAdapter() {
-						// this is the simplest way to delete an
-						// object from the Adapter
-						// (/AdapterView)
-						Log.d("LIST", "removed object!");
-					}
-
-					@Override
-					public void onLeftCardExit(Object dataObject) {
-						// Do something on the left!
-						// You also have access to the original
-						// object.
-						// If you want to use it just cast it
-						// (String) dataObject
-						Toast.makeText(MainActivity.this, "Left!",
-								Toast.LENGTH_SHORT).show();
-					}
-
-					@Override
-					public void onRightCardExit(Object dataObject) {
-						Toast.makeText(MainActivity.this, "Right!",
-								Toast.LENGTH_SHORT).show();
-					}
-
-					@Override
-					public void onAdapterAboutToEmpty(int itemsInAdapter) {
-						// Ask for more data here
-
-						Log.d("LIST", "notified");
-					}
-				});
-
-		// Optionally add an OnItemClickListener
-		flingContainer
-				.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
-					@Override
-					public void onItemClicked(int itemPosition,
-							Object dataObject) {
-
-						Toast.makeText(MainActivity.this, "Clicked!",
-								Toast.LENGTH_SHORT).show();
-					}
-				});
-
-		// getDataFromServer();
-	}
-
-	static void makeToast(Context ctx, String s) {
-		Toast.makeText(ctx, s, Toast.LENGTH_SHORT).show();
-	}
-
-	public void right() {
-		/**
-		 * Trigger the right event manually.
-		 */
-		flingContainer.getTopCardListener().selectRight();
-	}
-
-	public void left() {
-		flingContainer.getTopCardListener().selectLeft();
+		pdt.setOnClickListener(new Product.OnClickListener() {
+			@Override
+			public void OnClickListener() {
+				Log.i("Swipeable Cards", "I am pressing the card");
+			}
+		});
 	}
 
 	private void getDataFromServer() {
@@ -137,7 +67,10 @@ public class MainActivity extends ActionBarActivity {
 						Gson gson = new Gson();
 						pdtsObj = gson.fromJson(result, Products.class);
 
-						Log.i(TAG, pdtsObj.getResults().get(0).getProductText());
+						adapter = new CardsAdapter(MainActivity.this,
+								pdtsObj.getResults());
+						mCardContainer.setAdapter(adapter);
+
 					}
 				}, new Response.ErrorListener() {
 
