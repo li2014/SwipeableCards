@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import org.json.JSONObject;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -11,8 +13,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request.Method;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -39,6 +43,7 @@ public class MainActivity extends ActionBarActivity {
 	private CardsAdapter adapter;
 
 	private DBAdapter db;
+	private ProgressDialog pDialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -51,12 +56,17 @@ public class MainActivity extends ActionBarActivity {
 		db = new DBAdapter(MainActivity.this);
 		db.openDatabase();
 
+		pDialog = new ProgressDialog(MainActivity.this);
+		pDialog.setMessage("Loading...");
+
 		getDataFromServer();
 
 	}
 
 	private void getDataFromServer() {
 		// TODO Auto-generated method stub
+
+		pDialog.show();
 
 		Log.i(TAG, url);
 		JsonObjectRequest jObjReq = new JsonObjectRequest(Method.GET, url,
@@ -100,16 +110,16 @@ public class MainActivity extends ActionBarActivity {
 										.currentCount());
 								db.insertRecord(pdt);
 
-								System.out.println(mCardContainer
-										.currentCount());
-								System.out.println(adapter.getItem(
-										mCardContainer.currentCount())
-										.getProductText());
+								Toast.makeText(MainActivity.this,
+										"Saved successfully",
+										Toast.LENGTH_SHORT).show();
 							}
 
 						});
 
 						mCardContainer.setAdapter(adapter);
+
+						pDialog.dismiss();
 
 					}
 				}, new Response.ErrorListener() {
@@ -117,6 +127,16 @@ public class MainActivity extends ActionBarActivity {
 					@Override
 					public void onErrorResponse(VolleyError error) {
 						// TODO Auto-generated method stub
+
+						NetworkResponse response = error.networkResponse;
+						if (response != null) {
+
+						} else {
+							Toast.makeText(
+									MainActivity.this,
+									"Something went wrong! please try again later",
+									Toast.LENGTH_SHORT).show();
+						}
 
 					}
 				});
@@ -145,7 +165,9 @@ public class MainActivity extends ActionBarActivity {
 
 		switch (item.getItemId()) {
 		case R.id.action_favorites:
-			System.out.println("Clicked");
+
+			Intent i = new Intent(MainActivity.this, FavoritesActivity.class);
+			startActivity(i);
 			break;
 		}
 		return super.onOptionsItemSelected(item);

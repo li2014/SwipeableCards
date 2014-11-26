@@ -1001,6 +1001,7 @@ containing a value of this type.
     }
     public static final class id {
         public static final int LinearLayout1=0x7f05003e;
+        public static final int RelativeLayout1=0x7f050045;
         public static final int action_bar=0x7f05001e;
         public static final int action_bar_activity_content=0x7f050015;
         public static final int action_bar_container=0x7f05001d;
@@ -1009,7 +1010,7 @@ containing a value of this type.
         public static final int action_bar_subtitle=0x7f050025;
         public static final int action_bar_title=0x7f050024;
         public static final int action_context_bar=0x7f05001f;
-        public static final int action_favorites=0x7f050044;
+        public static final int action_favorites=0x7f050046;
         public static final int action_menu_divider=0x7f050016;
         public static final int action_menu_presenter=0x7f050017;
         public static final int action_mode_close_button=0x7f050026;
@@ -1034,6 +1035,7 @@ containing a value of this type.
         public static final int image=0x7f050029;
         public static final int layoutview=0x7f05003f;
         public static final int listMode=0x7f050001;
+        public static final int listView1=0x7f050044;
         public static final int list_item=0x7f05002b;
         public static final int middle=0x7f050012;
         public static final int never=0x7f050009;
@@ -1121,7 +1123,9 @@ containing a value of this type.
         public static final int abc_search_view=0x7f030016;
         public static final int activity_main=0x7f030017;
         public static final int card_swipe_item=0x7f030018;
-        public static final int support_simple_spinner_dropdown_item=0x7f030019;
+        public static final int favorites_activity=0x7f030019;
+        public static final int favs_lv_items=0x7f03001a;
+        public static final int support_simple_spinner_dropdown_item=0x7f03001b;
     }
     public static final class menu {
         public static final int main=0x7f0c0000;

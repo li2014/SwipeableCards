@@ -20,7 +20,7 @@ public class DBAdapter {
 	public static final int DATABASE_VERSION = 1;
 
 	// defining columns
-	public static final String COL_ROWID = "rowid";
+	public static final String COL_ROWID = "_id";
 	public static final String COL_PRODUCT = "product";
 	public static final String COL_UPVOTES = "upvotes";
 	public static final String COL_PRODUCT_TEXT = "productText";
@@ -28,7 +28,7 @@ public class DBAdapter {
 	public static final String COL_DESCRIPTION = "description";
 
 	private final String CREATE_TABLE = "create table favorites"
-			+ "(rowid integer primary key autoincrement,"
+			+ "(_id INTEGER PRIMARY KEY AUTOINCREMENT,"
 			+ "product text not null,upvotes text not null,"
 			+ "productText text not null,productSource text not null,"
 			+ "description text not null) ";
@@ -70,7 +70,7 @@ public class DBAdapter {
 		return db.insert(TABLE_NAME, null, con);
 	}
 
-	private Cursor getAllRecords() {
+	public Cursor getAllRecords() {
 		String[] columns = { COL_ROWID, COL_PRODUCT, COL_UPVOTES,
 				COL_PRODUCT_TEXT, COL_PRODUCT_SOURCE, COL_DESCRIPTION };
 		return db.query(TABLE_NAME, columns, null, null, null, null, null);
