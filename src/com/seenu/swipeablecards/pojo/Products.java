@@ -78,9 +78,9 @@ public class Products {
 		}
 
 		public interface OnCardDimissedListener {
-			void onLike();
+			void onDismiss();
 
-			void onDislike();
+			void onAddToFavourites();
 		}
 
 		public String getProduct() {
@@ -127,7 +127,7 @@ public class Products {
 			return mOnCardDimissedListener;
 		}
 
-		public void setmOnCardDimissedListener(
+		public void setOnCardDimissedListener(
 				OnCardDimissedListener mOnCardDimissedListener) {
 			this.mOnCardDimissedListener = mOnCardDimissedListener;
 		}

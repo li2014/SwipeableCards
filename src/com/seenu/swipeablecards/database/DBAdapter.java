@@ -1,5 +1,7 @@
 package com.seenu.swipeablecards.database;
 
+import com.seenu.swipeablecards.pojo.Products.Product;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -41,18 +43,24 @@ public class DBAdapter {
 		dbHelper = new DBHelper(context);
 	}
 
-	DBAdapter openDatabase() {
+	public DBAdapter openDatabase() {
 		db = dbHelper.getWritableDatabase();
 		return this;
 	}
 
-	void close() {
+	public void close() {
 		dbHelper.close();
 	}
 
-	private long insertRecord(String product, String upvotes,
-			String productText, String productSource, String description) {
+	public long insertRecord(Product pdt) {
 		ContentValues con = new ContentValues();
+
+		String product = pdt.getProduct();
+		String upvotes = pdt.getUpvotes();
+		String productText = pdt.getProductText();
+		String productSource = pdt.getProductSource();
+		String description = pdt.getDescription();
+
 		con.put(COL_PRODUCT, product);
 		con.put(COL_UPVOTES, upvotes);
 		con.put(COL_PRODUCT_TEXT, productText);

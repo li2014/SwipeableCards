@@ -16,6 +16,7 @@ public class CardsAdapter extends BaseAdapter {
 	private Context context;
 	private ArrayList<Product> results;
 	private int size;
+	private final Object mLock = new Object();
 
 	public CardsAdapter(Context context, ArrayList<Product> results) {
 		// TODO Auto-generated constructor stub
@@ -31,7 +32,7 @@ public class CardsAdapter extends BaseAdapter {
 	}
 
 	@Override
-	public Object getItem(int position) {
+	public Product getItem(int position) {
 		// TODO Auto-generated method stub
 		return results.get(position);
 	}
@@ -39,7 +40,7 @@ public class CardsAdapter extends BaseAdapter {
 	@Override
 	public long getItemId(int position) {
 		// TODO Auto-generated method stub
-		return 0;
+		return position;
 	}
 
 	@Override

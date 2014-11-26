@@ -8,6 +8,10 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
+
 import com.android.volley.Request.Method;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -15,6 +19,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.gson.Gson;
 import com.seenu.swipeablecards.adapter.CardsAdapter;
 import com.seenu.swipeablecards.application.SwipeableCards;
+import com.seenu.swipeablecards.database.DBAdapter;
 import com.seenu.swipeablecards.pojo.Products;
 import com.seenu.swipeablecards.pojo.Products.Product;
 import com.seenu.swipeablecards.swipecards.CardContainer;
@@ -30,7 +35,10 @@ public class MainActivity extends ActionBarActivity {
 	private ArrayList<String> al;
 
 	private CardContainer mCardContainer;
+	private TextView emptyTv;
 	private CardsAdapter adapter;
+
+	private DBAdapter db;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -38,17 +46,13 @@ public class MainActivity extends ActionBarActivity {
 		setContentView(R.layout.activity_main);
 
 		mCardContainer = (CardContainer) findViewById(R.id.layoutview);
+		emptyTv = (TextView) findViewById(R.id.textView1);
+
+		db = new DBAdapter(MainActivity.this);
+		db.openDatabase();
 
 		getDataFromServer();
 
-		Product pdt = new Product();
-
-		pdt.setOnClickListener(new Product.OnClickListener() {
-			@Override
-			public void OnClickListener() {
-				Log.i("Swipeable Cards", "I am pressing the card");
-			}
-		});
 	}
 
 	private void getDataFromServer() {
@@ -67,8 +71,44 @@ public class MainActivity extends ActionBarActivity {
 						Gson gson = new Gson();
 						pdtsObj = gson.fromJson(result, Products.class);
 
-						adapter = new CardsAdapter(MainActivity.this,
-								pdtsObj.getResults());
+						adapter = new CardsAdapter(MainActivity.this, pdtsObj
+								.getResults());
+
+						Product pdt = pdtsObj.getResults().get(0);
+
+						pdt.setOnCardDimissedListener(new Product.OnCardDimissedListener() {
+
+							@Override
+							public void onDismiss() {
+								// TODO Auto-generated method stub
+
+								if (mCardContainer.getChildCount() == 1) {
+									emptyTv.setVisibility(View.VISIBLE);
+								} else
+									;
+							}
+
+							@Override
+							public void onAddToFavourites() {
+								// TODO Auto-generated method stub
+								if (mCardContainer.getChildCount() == 1) {
+									emptyTv.setVisibility(View.VISIBLE);
+								} else
+									;
+
+								Product pdt = adapter.getItem(mCardContainer
+										.currentCount());
+								db.insertRecord(pdt);
+
+								System.out.println(mCardContainer
+										.currentCount());
+								System.out.println(adapter.getItem(
+										mCardContainer.currentCount())
+										.getProductText());
+							}
+
+						});
+
 						mCardContainer.setAdapter(adapter);
 
 					}
@@ -86,10 +126,29 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		db.close();
+	}
+
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+
+		switch (item.getItemId()) {
+		case R.id.action_favorites:
+			System.out.println("Clicked");
+			break;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 }

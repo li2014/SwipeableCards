@@ -70,6 +70,7 @@ public class CardContainer extends AdapterView<ListAdapter> {
 	private float mLastTouchX;
 	private float mLastTouchY;
 	private boolean mDragging;
+	private int currentCount;
 
 	public CardContainer(Context context) {
 		super(context);
@@ -95,14 +96,13 @@ public class CardContainer extends AdapterView<ListAdapter> {
 	@Override
 	public void setSelection(int position) {
 		// TODO Auto-generated method stub
-		// throw new UnsupportedOperationException();
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public View getSelectedView() {
 		return mTopCard;
 		// TODO Auto-generated method stub
-		// throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -130,6 +130,11 @@ public class CardContainer extends AdapterView<ListAdapter> {
 			mTopCard.setLayerType(LAYER_TYPE_HARDWARE, null);
 		}
 		mNumberOfCards = getAdapter().getCount();
+		currentCount = 0;
+
+		System.out.println("Number of Cards: " + mNumberOfCards);
+		System.out.println("currentCount: " + currentCount);
+
 		requestLayout();
 	}
 
@@ -346,6 +351,10 @@ public class CardContainer extends AdapterView<ListAdapter> {
 		return false;
 	}
 
+	public int currentCount() {
+		return currentCount;
+	}
+
 	private void init() {
 		ViewConfiguration viewConfiguration = ViewConfiguration
 				.get(getContext());
@@ -483,16 +492,20 @@ public class CardContainer extends AdapterView<ListAdapter> {
 				duration = Math.min(500, duration);
 
 				mTopCard = getChildAt(getChildCount() - 2);
-				Product cardModel = (Product) getAdapter().getItem(0);
+				// Log.d("Fling", String.valueOf(getChildCount()));
+
+				Product pdt = (Product) getAdapter().getItem(0);
 
 				if (mTopCard != null)
 					mTopCard.setLayerType(LAYER_TYPE_HARDWARE, null);
 
-				if (cardModel.getOnCardDimissedListener() != null) {
+				if (pdt.getOnCardDimissedListener() != null) {
 					if (targetX > 0) {
-						cardModel.getOnCardDimissedListener().onDislike();
+						pdt.getOnCardDimissedListener().onAddToFavourites();
+						currentCount++;
 					} else {
-						cardModel.getOnCardDimissedListener().onLike();
+						pdt.getOnCardDimissedListener().onDismiss();
+						currentCount++;
 					}
 				}
 
